@@ -6,11 +6,11 @@ import behavioralPattern.builder.components.Transmission;
 import java.awt.*;
 
 public class Motobike {
-    private MotoType type;
-    private Engine engine;
-    private Transmission transmission;
-    private Color color;
-    private WheelType wheelType;
+    private final MotoType type;
+    private final Engine engine;
+    private final Transmission transmission;
+    private final Color color;
+    private final WheelType wheelType;
     private double fuel;
 
     public Motobike(MotoType type,Engine engine, Transmission transmission, Color color, WheelType wheelType) {
