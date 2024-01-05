@@ -1,9 +1,7 @@
 package task7_8.test.a_Introductory;
 
 import static org.junit.Assert.*;
-
 import org.junit.Test;
-
 import task7_8.java.a_Introductory.Fibonacci;
 
 public class FibonacciTest {

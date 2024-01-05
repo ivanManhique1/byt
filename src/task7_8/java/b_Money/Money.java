@@ -13,15 +13,26 @@ public class Money implements Comparable {
 		this.amount = amount;
 		this.currency = currency;
 	}
-
+	
 	/**
 	 * Return the amount of money.
 	 * @return Amount of money in Double type.
 	 */
+	
+	public Integer getAmount() {
+		return (int) (amount/100.0);
+	}
+	
+	/*
 	public Integer getAmount() {
 		return amount;
 	}
-
+	*/
+	//i am keeping both getter here cause for the Bank it is necessary that the value is type Integer not Double
+	//when checking the implementation for Bank and Account please not that we are using the Integer getter, 
+	//but when checking the MoneyTest and CurrencyTest we use the double getter
+    
+	
 	/**
 	 * Returns the currency of this Money.
 	 * @return Currency object representing the currency of this Money
@@ -29,7 +40,7 @@ public class Money implements Comparable {
 	public Currency getCurrency() {
 		return currency;
 	}
-
+	
 	/**
 	 * Returns the amount of the money in the string form "(amount) (currencyname)", e.g. "10.5 SEK".
 	 * Recall that we represent decimal numbers with integers. This means that the "10.5 SEK" mentioned
@@ -37,26 +48,31 @@ public class Money implements Comparable {
 	 *  @return String representing the amount of Money.
 	 */
 	public String toString() {
-		return amount + " "+ currency.getName();
-	}
-
+		return String.format("%.2f %s", getAmount(), currency.getName());
+    }
+	
 	/**
 	 * Gets the universal value of the Money, according the rate of its Currency.
 	 * @return The value of the Money in the "universal currency".
 	 */
 	public Integer universalValue() {
-		return currency.universalValue(amount);
+		 return currency.universalValue(this.amount);
 	}
-
+	
 	/**
 	 * Check to see if the value of this money is equal to the value of another Money of some other Currency.
 	 * @param other The other Money that is being compared to this Money.
 	 * @return A Boolean indicating if the two monies are equal.
 	 */
-	public Boolean equals(Money other) {
-		return this.currency.equals(other.currency);
+	public boolean equals(Object obj) {
+	    if (this == obj) return true;
+	    if (obj == null || getClass() != obj.getClass()) return false;
+
+	    Money other = (Money) obj;
+	    return this.universalValue().equals(other.universalValue());
 	}
 
+	
 	/**
 	 * Adds a Money to this Money, regardless of the Currency of the other Money.
 	 * @param other The Money that is being added to this Money.
@@ -64,9 +80,10 @@ public class Money implements Comparable {
 	 * (Remember to convert the other Money before adding the amounts)
 	 */
 	public Money add(Money other) {
-		amount +=other.amount;
-		return this;
+	    int addedAmount = this.amount + currency.valueInThisCurrency(other.amount, other.currency);
+	    return new Money(addedAmount, this.currency);
 	}
+
 
 	/**
 	 * Subtracts a Money from this Money, regardless of the Currency of the other Money.
@@ -75,25 +92,25 @@ public class Money implements Comparable {
 	 * (Again, remember converting the value of the other Money to this Currency)
 	 */
 	public Money sub(Money other) {
-		amount -=other.amount;
-		return this;
+		int subtractedAmount = this.amount - this.currency.valueInThisCurrency(other.amount, other.currency);
+        return new Money(subtractedAmount, this.currency);
 	}
-
+	
 	/**
 	 * Check to see if the amount of this Money is zero or not
 	 * @return True if the amount of this Money is equal to 0.0, False otherwise
 	 */
 	public Boolean isZero() {
-		return false;
+		return this.amount == 0;
 	}
 	/**
 	 * Negate the amount of money, i.e. if the amount is 10.0 SEK the negation returns -10.0 SEK
 	 * @return A new instance of the money class initialized with the new negated money amount.
 	 */
 	public Money negate() {
-		return null;
+		return new Money(-this.amount, this.currency);
 	}
-
+	
 	/**
 	 * Compare two Monies.
 	 * compareTo is required because the class implements the Comparable interface.
@@ -104,6 +121,6 @@ public class Money implements Comparable {
 	 * A positive integer if this Money is more valuiable than the other Money.
 	 */
 	public int compareTo(Object other) {
-		return 0;
+		return this.universalValue().compareTo(((Money) other).universalValue());
 	}
 }

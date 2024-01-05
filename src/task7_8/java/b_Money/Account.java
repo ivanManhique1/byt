@@ -4,11 +4,9 @@ import java.util.Hashtable;
 
 public class Account {
 	private Money content;
-	private String name;
 	private Hashtable<String, TimedPayment> timedpayments = new Hashtable<String, TimedPayment>();
 
 	public Account(String name, Currency currency) {
-		this.name = name;
 		this.content = new Money(0, currency);
 	}
 
@@ -21,14 +19,11 @@ public class Account {
 	 * @param tobank Bank where receiving account resides
 	 * @param toaccount Id of receiving account
 	 */
-	public void addTimedPayment(String id, Integer interval, Integer next, Money amount, Bank tobank, String toaccount) throws AccountDoesNotExistException {
-		if (!tobank.getAccountlist().containsKey(toaccount)) {
-			throw new AccountDoesNotExistException();
-		}
+	public void addTimedPayment(String id, Integer interval, Integer next, Money amount, Bank tobank, String toaccount) {
 		TimedPayment tp = new TimedPayment(interval, next, amount, this, tobank, toaccount);
 		timedpayments.put(id, tp);
 	}
-
+	
 	/**
 	 * Remove a timed payment
 	 * @param id Id of timed payment to remove
@@ -36,27 +31,25 @@ public class Account {
 	public void removeTimedPayment(String id) {
 		timedpayments.remove(id);
 	}
-
+	
 	/**
 	 * Check if a timed payment exists
 	 * @param id Id of timed payment to check for
 	 */
-	public boolean timedPaymentExists(String id) throws AccountDoesNotExistException {
-		if (!timedpayments.containsKey(id)){
-			throw new AccountDoesNotExistException();
-		}
-		return !timedpayments.containsKey(id) ;
+	public boolean timedPaymentExists(String id) {
+		return timedpayments.containsKey(id);
 	}
 
 	/**
 	 * A time unit passes in the system
 	 */
-	public void tick() {
-		for (TimedPayment tp : timedpayments.values()) {
-			tp.tick(); tp.tick();
-		}
-	}
-
+    public void tick() {
+        for (TimedPayment tp : timedpayments.values()) {
+            tp.tick();//This line should call tp.tick() only once. i changed it so it is corect now
+        }
+    }
+    //i have made changes in this class
+	
 	/**
 	 * Deposit money to the account
 	 * @param money Money to deposit.
@@ -64,13 +57,13 @@ public class Account {
 	public void deposit(Money money) {
 		content = content.add(money);
 	}
-
+	
 	/**
 	 * Withdraw money from the account
 	 * @param money Money to withdraw.
 	 */
 	public void withdraw(Money money) {
-		this.content = content.sub(money);
+		content = content.sub(money);
 	}
 
 	/**
@@ -88,7 +81,7 @@ public class Account {
 		private Money amount;
 		private Bank tobank;
 		private String toaccount;
-
+		
 		TimedPayment(Integer interval, Integer next, Money amount, Account fromaccount, Bank tobank, String toaccount) {
 			this.interval = interval;
 			this.next = next;
@@ -100,24 +93,19 @@ public class Account {
 
 		/* Return value indicates whether or not a transfer was initiated */
 		public Boolean tick() {
-			if (next == 0) {
-				next = interval;
-
-				fromaccount.withdraw(amount);
-				try {
-					tobank.deposit(toaccount, amount);
-				}
-				catch (AccountDoesNotExistException e) {
-					/* Revert transfer.
-					 * In reality, this should probably cause a notification somewhere. */
-					fromaccount.deposit(amount);
-				}
-				return true;
-			}
-			else {
-				next--;
-				return false;
-			}
+            if (next == 0) {
+                next = interval;
+                fromaccount.withdraw(amount);
+                try {
+                    tobank.deposit(toaccount, amount);
+                } catch (AccountDoesNotExistException e) {
+                    fromaccount.deposit(amount);
+                }
+                return true;
+            } else {
+                next--;
+                return false;
+            }
 		}
 	}
 

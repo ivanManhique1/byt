@@ -3,7 +3,7 @@ package task7_8.java.b_Money;
 public class Currency {
 	private String name;
 	private Double rate;
-
+	
 	/**
 	 * New Currency
 	 * The rate argument of each currency indicates that Currency's "universal" exchange rate.
@@ -20,13 +20,14 @@ public class Currency {
 
 	/** Convert an amount of this Currency to its value in the general "universal currency"
 	 * (As mentioned in the documentation of the Currency constructor)
-	 *
+	 * 
 	 * @param amount An amount of cash of this currency.
 	 * @return The value of amount in the "universal currency"
 	 */
 	public Integer universalValue(Integer amount) {
-		return (int) Math.round(amount * rate);
+	    return (int) (amount * this.rate);
 	}
+	
 
 	/** Get the name of this Currency.
 	 * @return name of Currency
@@ -34,30 +35,30 @@ public class Currency {
 	public String getName() {
 		return name;
 	}
-
+	
 	/** Get the rate of this Currency.
-	 *
+	 * 
 	 * @return rate of this Currency
 	 */
 	public Double getRate() {
 		return rate;
 	}
-
+	
 	/** Set the rate of this currency.
-	 *
+	 * 
 	 * @param rate New rate for this Currency
 	 */
 	public void setRate(Double rate) {
 		this.rate = rate;
 	}
-
+	
 	/** Convert an amount from another Currency to an amount in this Currency
-	 *
+	 * 
 	 * @param amount Amount of the other Currency
 	 * @param othercurrency The other Currency
 	*/
 	public Integer valueInThisCurrency(Integer amount, Currency othercurrency) {
-		double valueInUniversal = amount * othercurrency.rate;
-		return (int) Math.round(valueInUniversal / this.rate);
+	    int universalValue = othercurrency.universalValue(amount);
+	    return (int) (universalValue / this.rate);
 	}
 }

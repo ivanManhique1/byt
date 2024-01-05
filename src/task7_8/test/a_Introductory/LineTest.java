@@ -3,8 +3,7 @@ package task7_8.test.a_Introductory;
 
 import org.junit.Before;
 import org.junit.Test;
-import task7_8.java.a_Introductory.Line;
-import task7_8.java.a_Introductory.Point;
+import task7_8.java.a_Introductory.*;
 
 import static org.junit.Assert.*;
 

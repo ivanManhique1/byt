@@ -1,7 +1,7 @@
 package task7_8.java.a_Introductory;
 
 public class Point {
-	public Integer x, y;
+	public int x, y;
 	
 	public Point(Integer x, Integer y) {
 		this.x = x;
